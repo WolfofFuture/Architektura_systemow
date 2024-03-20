@@ -1,0 +1,278 @@
+-zainstalować VERILOG, VHDL i VIVADO 2020.1
+-języki/opisy sprzętu 
+- liteatura w materiałach z zajęć:
+	Wprowadzenie do języka VERILOG
+	Digital Desing and Computer Architecture
+	Układy FPGA w przykładach
+- przeczytać wszystkto z rozdziału pierwszego do strony 36
+- zaliczenie to ustny egzamin
+
+57 slajd wykład
+
+
+87 slajd 06.03.2024
+
+14.03.2024 
+initial --- jedynie w symulacji
+always --- bloki wykonują się w ciągły sposób i są od siebie niezależne
+wartości:
+	real -- jedynie symulacje
+	time -- jedynie symulacje
+<value> = <wyrażenie> --- blocking
+<value> <= <wyrażenie> --- non-blocking
+
+blocking (=) --- w symulacji; nie wstrzumuje działań innych bloków
+non-blocking (<=) --- przypisania wykonywane równocześnie; nie wstrzymuje innych bloków
+
+zjawisko HAZARDU --- a i b mają taką samą wartość
+nie trzeba osobno deklarować input a potem reg
+	module fd (y,u,r,gh);
+	output reg [7:0] k,
+	input wire [7:0] r;
+
+asynchroniczny reset -- synchronizowanie wartości wejścia-wyjścia
+wait -- tylko w symulacji
+count_enable -- tylko w implementacji
+casez -- traktuje wszystkie wartości z jako nieznaczące; wszystkie bity można zapisać jako ?
+casex -- traktuje wszystkie wartości x i z jako nieznaczące
+pętla while -- uruchamia się dopóki wyrażenie jest prawdziwe; na potrzeby symulacyjne;implementacja jedynie w automatyzacji
+pętla repeat -- wykonuje polecenie określoną liczbę razy
+pętla forever -- tylko w symulacji; == while(1); 
+bloki sekwencyjne -- zgrupowanie begin i end;polecenia krok po kroku;polecenie po poprzednim (za wyjątkiem nonblocking);opóźnienia względem czasu wejścia do bloku;
+
+Funkcja:							Zadanie:
+	-mogą uruchamiać inne funkcje, nie zadania;			-może uruchamiać inne zadania i funkcje
+	-czas wykonywania zawsze zerowy;				-może wykonywać się przez czas niezerowy
+	-nie może zawierać opóźnień;					-może zawierać opóźnienia i inne struktury kontroli czasowej		
+	-mogą być i w simulation sources i design sources		-może mieć zero lub więcej argumentów typu input, output lub inout
+	-przynajmniej jeden argument
+	-zawsze zwraca pojedynczą wartość				-nie zwraca wartości ale może zwracać wartości poprzez argumenty typu output lub inout
+
+nie wolno zagnieżdżać w sobie modułów
+zamykanie pliku -- $fclose (<handle>);
+$strobe -- zsynchronizowany display
+na razie nie stosować tablic jednowymiarowych
+
+operacje na liczbach signed (wartości ze znakiem):
+	-reg oraz net mogą być zadeklarowane jako signed
+	-funkcja może zwracać wartości signed
+	-liczby integer mogą być zadeklarowane jako signed
+	-możliwa jest konwersja signed<->unsigned (bez znaku)
+D=8'b10100011
+D >> 3 // logiczna zmiana -> 8'b00010100 -- przesuwa ostatnie jedynki o 3 miejsca
+D >>> 3 // arytmetyczna zmiana -> 8'b11110100 -- przesuwa jedynki z końca na początek
+slajd 180 część 10 VHDL
+
+20.03.2024
+VHDL - VHSIC Hardware Descritpion Language
+1987: standard IEEE 1076-1987
+1993: znowelizowano standard 1076-1987
+Rozszerzenia języka VHDL:
+	-1076.1 - VHDL-AMS
+	-1076.2
+
+Verilog:			VHDL:
+-poziom kluczy			-poziom strukturalny
+-poziom bramek logicznych	-poziom przesłań międzyrejestrowych RTL
+-poziom rejestrów		-abstrakcyjny poziom behawioralny
+-poziom behawioralny		-typowy język opisowy
+-język opisu abstrakcji
+VHDL:
+- nie rozróżnia małych i dużych liczb
+- komentarze się robi dwoma myślnikami --
+type t_costam is ...
+sygnały - w modułach celem łączenia; podobne do register,wire
+operacje na zmiennych nonblocking i przypisane
+
+lsb - najmniej znaczący
+msb - najwięcej znaczący
+
+Typy tablicowe - ograniczony typ:
+type <daddada> is array
+	(<zakres całkowity>) of <typ_elementu_tablicy>
+
+signal moj_wektor1 : std_logic_vector (5 downto -5); -- jest w bilbiotece i nie ma ograniczeń -- 11 bitów
+
+Tablcie wielowymiarowe:
+	Syntezowalne (dwuwymiarowe):
+	type t_BAJT is array (7 downto 0) of std_logic;
+	Niesytezowalne (wielowymiarowe):
+	type t_MULTI is array (7 downto 0, 255 downto 0) of std_logic;
+Typ rzeczywisty:
+	variable x_v : real; ...; x_v := 1.234;
+Typ fizyczny:
+	wait for 10 ns;
+Konwersja typów:
+	type t_T1 is range 0 to 255;
+	signal a1 : t_T1;
+	signal a2 : integer range 0 to 255;
+	if a1 = t_T1(a2) then -- nie ma błędu!
+Biblioteki:
+	library <nazwa_biblio>
+	use <nazwa_biblio>.<nazwa_pakietu>.all;
+	library IEEE;
+	use IEEE.std_logic_1164.all;
+	use IEEE.std_logic_unsigned.all;
+Pakiet std_logic_1164:
+	library IEEE; use IEEE.std_logic_1164.all;
+		| U = niezainicjowany (uninitialized)	| W = stan nieznay dla sygnału niskoobciążalnego (weak unknown)
+		| X = stan nieznany (unknown)		| L = stan niskiej rezystancji (dla wyjść typu otwarty emiter (weak'0')
+		| 0 = stan logiczny '0'			| H = stan wysokiej rezystancji (otwarty kolektor) (weak'1')
+		| 1 = stan logicznty '1' 		| - = stan nieistotny (don't care)
+		| Z = stan wysokiej impedancji dla sygnału trzystanowego (tri-state)
+	za znak odpowiada najstarszy bit (lub ich grupa)
+	abstrakcja parezy na długość znaków
+
+U2 opanować!!!!!!!!!!!!!!!!!!
+
+Pakiet std_logic_arith:
+	conv_signed(signed'("110"),8) --> "11111110"
+	conv_unsigned(unsigned'("1101010",3) --> "010"
+
+	std_logic_un/signed
+	| umożiwia wykonywanie operacji:
+		-arytmerycznych
+		-konwersji
+		-porównania
+	dla unsigned:wartości typu logic traktowanych jako liczby całkowite bez znaku (unsigned)
+	dla signed: wartości typu std_logic traktowanych jako liczbt całkowite ze znakiem (signed) zakodowanych jako uzupełnienie do 2
+
+Architektury:
+	architecture <nazwa> of 
+		<nazwa_entity> is
+			<deklaracje>
+		........
+	begin
+		<polecenia_współbieżne>
+	end architecture; --lub end <nazwa_architektury> lub end architecture <nazwa_architektury>
+
+Osadzanie:
+	|Deklaracja komponentu:
+		component <nazwa>
+
+	|Mapowanie portów:
+		-Sposób uproszczony (jak w deklaracji)
+	B1 '(obiekt)': '(typ obiektu)' nand2 port map (in1, in2, out1);
+		-Sposób II (kolejność jest nieistotna)
+	B1
+
+Polecenie generate:
+	|for-generate
+		entity test is
+		 port (a,b : in bit_vector(3 downto 0);
+		   c : out bit_vector ...
+		end entity;
+	
+	|if-generate
+
+
+Parametry bloku entity (generic)
+	Przykład:
+		entity ANDX is
+			generic (W : positive);
+		end entity;
+		begin
+			G: for I in W-1 downto 0 generate
+				Y(I) <= A(I) and B(I);
+			eng generate;
+
+Na układzie dioda się zapali na 0, a na 1 zgaśnie; zasili się bezpośrednio z układu
+Układy PGA w przykładach strona 136
+
+
+Współbieżne przypisanie proste:
+	|składnia:
+		<odbiorca> <= <Wyrażenie>
+		
+	|składnia przypisania:
+		with <wyrażenie> select
+		 <odbiorca> <= <Wyrażenie1> when <Wybór1>
+		  	       <WyrażenieN> when <WybórN>
+
+Przypisanie select jest szybsze od przypisania warunkowego;
+
+Operatory porównania:
+"101011" < "1011" -- warunek spełniony
+"101" < "101000 -- warunek spełniony
+
+Opóźnienia:
+	Y <= inerital A after 7 ns when SEL="00" else...;
+	
+Instrukcje współbieżne:		Instrukcje sekwencyjne:	
+-przypisania wartoći sygnału	-oczekiwania
+(<=)				-
+-kontroli (assert)
+- procesu (process)
+- procedury
+- funkcji
+- blokowa (block)
+- wstawiania składnika
+(component)
+- powielania (generate) 
+Zawsze trzeba uważać na zjawisko HAZARDU.
+
+
+Poziom behawioralny
+	procesy zegarowe:
+		LOADREG : process (clock,reset)
+		begin
+			if reset='1' then
+				REG <= "00000000"; -- wyczyścić rejestr REG
+			elsif rising_edge (clock) then
+	procesy kombinacyjne (najczęściej multipleksery):
+		MUX2_2 : process (A,b,SEL) -- multiplekser 2 na 1
+		współbieżne przypisane ciągłe  
+			architecture beh of test
+				is
+			begin
+		jest równe
+			architecture beh of test
+				is
+			begin
+				process (a,b)
+	procesy zatrzaskowe:
+		load_latch : process (ENABLE,RESET,DATABUS)
+		begin
+			if RESET='1' then -- zerowanie zatrzasku
+				LATCH<="0000000";
+
+Funkcje i procedury
+function rising_edge (signal CLK: std_logic)
+	return boolean
+
+|funkcje i procedury mogą być zagnieżdżone
+|wyrażenia wait nie są dopuszczalne w ciele funkcji (W PROCEDURACH SĄ!!) i dlatego funkcje są wykonywane w zerowym czasie
+|z tego powody wyrażenie wait NIE MOŻE znajdować się również w procedurze wywoływanej przez funkcję
+|funkcje mogą być wywoływane rekurencyjnie
+
+procedury można stosować w pętlach;
+
+Pakiety:
+|Tworzenie pakietów:
+	package moj_pakiet is ... deklaracje typów, stałych, funkcji i procedur
+	end package moj_pakiet;
+	
+	package body moj_pakiet is
+	deklaracje i definicje (implementacje) funkcji i procedur
+	end package moj_pakiet;
+
+library ieee;
+use ieee.std_logic_1164.all;
+entity fifo is
+...
+end entity;
+
+Synteza układów kombinacyjnych:
+signal upcount : integer range 0 to 255;
+
+jeżeli jest potrzeba to warto zaimplementować in i out, a jeżeli nie ma to warto unikać
+
+
+automat MURA znajduje się w kalkulatorze i jest on znacznie popularniejszy
+jest również automat MILEGO
+oba mają wzajemną konwersję
+
+Są dwa typy MURA:
+	- szybki (zżera dużo zasobów)
+	- safely (oszczędzający zasoby)
+slajd 318 atrybuty część 19
