@@ -185,3 +185,36 @@ UWAGI DOTYCZĄCE SYNTEZY:
         -W większości rzeczywistych układów nie istnieje układ sprawdzający, czy
         sygnał jest w stanie wysokiej impedancji, więc takie polecenie nie będzie
         zsyntezowane.
+
+*Instrukcja if czy case?
+      -Wyrażenia typu if-then-else są najczęściej syntezowane jako multipleksery
+      z sygnałem sterującym zawartym w warunku instrukcji.
+      -Jeżeli użyjemy zagnieżdżonych instrukcji if-then-else, nie prowadzi to do
+      wykorzystania dużego multipleksera ze złożonym słowem sterującym.
+      Zamiast tego użyty jest łańcuch małych multiplekserów mniej więcej oddający
+      kolejność kodu VHDL.
+      - Wyrażenie case również prowadzi do syntezy multipleksera, jednakże w tym przypadku
+        może to być to jeden element, niezależnie od liczby rozgałęzień.
+      - Z tego powodu, jeśli chcemy mieć jeden duży multiplekser (prawdopodobnie szybki),
+        popwinniśmy użyć wyrażenia case.
+      - Jeśli jednakże prędkość działania układu nie jest kluczowa, użycie
+        zagnieżdżonych instrukcji if jest łatwiejsze do rozmieszczenia i trasowania
+        (może dać mniejszą użytą powierzchnię)
+  
+  *Wybór implementacji:
+      - kompromis pomiędzy powierzchnią a szybkością działania
+      - wybór automatyczny ---ze środowisk producentów
+      - wybór poprzez ograniczenia (constraints)
+      - wybór poprzez dyrektywy w kodzie HDL
+
+  *Przypisywanie wartości do wszystkich wyjść we wszystkich warunkach.
+      -Stosownie do zasady - "Jeśli w procesie zegarowanym dla danego warunku
+      nie specyfikuje się wartości sygnału oznacza to zapamiętanie jego 
+      poprzedniego stanu, czyli w zsyntezowanym układzie wstawienei przerzutnika"
+      można łatwo spowodować wstawienie niepotrzebnych przerzutników lub nawet
+      doprowadzić do nieprawidłowej pracy układu.
+
+WARTOŚCI POCZĄTKOWE NAJLEPIEJ STOSOWAĆ NA SYMULACJI
+
+WARTOŚCI DON'T CARE STOSUJEMY TYLKO W SYMULACJI
+
