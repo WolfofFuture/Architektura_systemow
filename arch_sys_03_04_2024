@@ -80,3 +80,108 @@ SYMULACJA I TESTOWANIE:
       Sygnały stałe:
           sig <= '1';
           data <= "11001";
+
+      Sygnały powtarzalne:
+          signal clk : std_logic :='0';
+          ....
+          process
+          begin
+            clk <= not clk after 25 ns;
+          end process;
+
+          constant CLK_PERIOD: time := 50 ns;
+          clk <= not clk after CLK_PERIOD/2;
+
+      Niesymetryczne sygnały powtarzalne:
+          PULSE1:   process
+          constant ZERO_TIME : time := 35 ns;
+          begin
+            pulse <= '1';
+            wait for 10 ns;
+            pulse <= '0';
+            wait for ZERO_TIME;
+          end process PULSE1;
+      Niesymetryczne sygnały powtarzalne (cd.)
+          PULSE1: process
+          begin
+          pulse <= '1';
+          wait
+          ^^^^^ze slajdu 338^^^^^
+
+      Wzory danych odczytywane z tablic:
+        library ieee;
+        use ieee.std_logic_1164.all;
+        use ieee.std_logic_arith.all;
+
+        entity TB is
+        end entity;
+
+        architecture BEH of TB is
+          type FREQ is array (1 to 6) of integer;
+          constant FREQVAL : FREQ := (10230, 10231, 10232, 10233, 10234, 10235);
+          ^^^^^slajd 345^^^^^^
+
+      347-----------------------
+        Instrukcja kontroli assert:
+            assert PULSE = '0'
+              report "Pulse has gone high"
+              severity WARNING;
+
+              *Typy ważności komunikatu mogą być FAILURE, ERROR, WARNING oraz NOTE.
+              *Polecenie assert może występować zarówno w części współbieżnej jak i sekwencyjnej kodu VHDL.
+              *Drukowanie wartości zmiennych:
+                variable X :integer;
+                .....
+                assert (ERROR = FALSE)
+                    report "Błąd symulacji, wartość X=" & integer'image(X);
+
+Pakiet textio, biblioteka std
+      use std.textio.all;
+        *Pakiet textio - typy danych:
+              -Typ line:
+          type line is access string;
+              -Typ text:
+          type text is file of string;
+              -Typ side:
+          type side is (RIGHT,LEFT);
+        *Pakiet textio - typy danych (cd.):
+              -Podtyp width:
+          subtype width is natural;
+              -Standardowe zmienne plikowe:
+          file input: text open READ_MORE is "std_input";
+          file output: text open WRITE_MODE is "std_output"
+        *Pakiet textio - procedury i funkcje:
+          procedure readline(file F: text; L: out line);
+          procedure writeline(file F: text; L: inout line);
+  Pakiet textio -- przykład (cd.)
+    library ieee;
+    use ieee.std_logic_1164.all;
+    use std.textio.all;
+    entity TB is
+    end entity;
+    architecture BEH of TB is
+      component ALI port (
+                          MODE : in std_ulogic;
+                          A, B : in std_ulogic_vector(31 downto 0);
+                          SUM  : out std_ulogic_vector(31 downto 0);
+                          CARRY : out std_ulogic
+                          );
+      end component;
+
+UWAGI DOTYCZĄCE SYNTEZY:
+    *Znajomość technologii
+        -Pisząc kod VHDL, należy zawsze brać pod uwagę sposób implementacji tego kodu.
+        -Nieznajomość hardware'u często sprawia, że projekt nie zostanie zsyntezowany
+          lub jego jakość będzie słaba.
+    *Używanie standardowych konwencji zapisu
+        -Aby projekt był przenośny i syntezował się w sposób przewidywalny, należy stosować
+        sprawdzone schematy przy wprowadzaniu projektu - dotyczy to np. struktury procesów
+    *Testowanie stanu wysokiej impedancji:
+        -W wielu przypadkach podczas symulacji zachodzi potrzeba sprawdzenia, czy sygnał
+        osiąga stan wysokiej impedancji 'Z'. Osiąga się to np. poprzez instrukcje:
+      if sig = 'Z' then -- sig jest typu std_logic
+          ........
+      end if;
+        -W większości rzeczywistych układów nie istnieje układ sprawdzający, czy
+        sygnał jest w stanie wysokiej impedancji, więc takie polecenie nie będzie
+        zsyntezowane.
