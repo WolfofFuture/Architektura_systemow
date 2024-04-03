@@ -1,0 +1,82 @@
+Typy danych:
+  typy tablicowe -- atrybuty tablic
+    signal moj_wektor : std_logic_vector (5 downto -5),
+  Wyrażenie zawierające atrybut:        Wartość:
+    moj_wektor'left                        5
+    moj_wektor'right                      -5
+    moj_wektor'high                        5
+    moj_wektor'low                        -5
+    moj_wektor'length                      11
+    moj_wektor'range                   (5 downto -5)
+    moj_wektor'reverse_range             (-5 to 5)
+
+Atrybuty dotyczące sygnałów
+  atrybut 'event -- zwraca TRUE, gdy w danym kroku symulacji nastąpiła zmiana wartości danego sygnału:
+    process (RST, CLK)
+    begin
+        if RST = '1' then
+            Q <= '0';
+        elsif CLK'event and CLK = '1' then
+            -- wykrywanie dodatniego
+            Q <= D;
+        end if;
+    end process;
+Atrybuty dotyczące sygnałów:
+  atrybut 'active (TYLKO NA SYMULACJI) - zwraca TRUE, gdy w danym kroku symulacji nastąpiło zaplanowanie jakiejś operacji 
+  dla danego sygnału:
+
+  atrybut 'last_event - (POZWALA PRZEPROWADZIĆ SYMULACJĘ), zwraca czas, jaki upłynął od czasu ostatniej zmiany sygnału:
+      process
+          variable T : time;
+      begin
+          Q <= D after 10 ns;
+          wait for 15 ns;
+          T := Q'last_event; -- T = 5ns
+            ......
+      end process;
+
+  'active, 'last_event,'last_value i 'last_active powinny być używane TYLKO DO SYMULACJI I TESTOWANIA UKŁADU - np. do
+  sprawdzania czasów ustalania się sygnałów (setup time, hold time)
+
+Atrybuty konwersji pomiędzy smienną i łańcuchem
+  atrybut <nazwa_typu>'image(<wyrażenie>)
+    -zwraca łańcuch string reprezentujący wyrażenie <wyrażenie>, które musi być typu <nazwa_typu>. Typ <nazwa_typu> musi być typem skalarnym.
+    variable X :integer;
+    ...
+    assert (ERROR = FALSE)
+      report "Błąd symulacji, wartość X=" &
+      integer'image (X);
+  atrybut <nazwa_typu>'value(<łańcuch>) -
+    -zamienia łańcuch <łańcuch> na wartość typu <nazwa_typu>:
+        next_state <= STATE'value(text_line);
+          -- zmienna text_line jest typu string
+          -- zmienna next_state jest typu STATE
+  atrybut <sygnał>'delayed(<czas>)
+    - tworzy nowy sygnał, ientyczny jak sygnał <sygnał>, ale opóźniony o czas <czas>
+      process <clk'delayed(hold)>; --- W IMPLEMENTACJI ABY OPÓŹNIĆ MOŻNA SKORZYSTAĆ Z LICZNIKA
+  atrybut <sygnał>'stable WYKORZYSTYWANE JEST W SYMULACJI
+
+  atrybut <sygnał>'quiet(<czas>) - tworzy nowy sygnał typu boolean, (TRUE, gdy dla <sygnał> nie zaplanowano operacji <czas>)
+    process
+      variable A: boolean;
+    begin
+      Q <= D after 30 ns;
+      wait for 10 ns;
+      A := Q'quiet(20 ns); -- A = FALSE, nastąpiło zaplanowanie przypisania 10ns wcześniej
+      wait for 40 ns;
+      A := Q'quiet(20 ns); -- A = TRUE, ostatnie zdarzenie nastąpiło 20 ns wcześniej
+    ....
+    end process
+MOŻLIWE JEST ZWIĘKSZENIE ILOŚCI PAMIĘCI W DYSKU HDD PRZEPROGRAMOWUJĄC GO
+
+
+SYMULACJA I TESTOWANIE:
+
+  Sygnały pobudzające 
+      Przypisanie wartości początkowych:
+          signal clk : std_logic:='1';
+          signal vec : std_logic_vector(7 downto 0) := "00000000";
+                NIE JEST ZAWSZE SYNTEZOWALNE...
+      Sygnały stałe:
+          sig <= '1';
+          data <= "11001";
