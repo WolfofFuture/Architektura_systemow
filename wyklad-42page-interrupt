@@ -1,0 +1,14 @@
+UWAGI DOTYCZĄCE SYNTEZY
+  Zwiększenie siły sygnału
+      Niektóre narzędzia syntezy rozpoznają wielokrotne podstawienia sygnału i umożliwiają zwiększenie siły sygnału, pod warnukiem, że instrukcje sterujące są identyczne:
+      architecture beh
+
+  Działania w celu:
+    zmniejszenia leakage:
+        Biblioteki o wyższym VTH --> większe opóźnienia!!!
+    zmniejszenia mocy dynamicznej:
+        Optymalizacja -> opóźnienia!!
+        Clock gating -> problemy z weryfikacją!!
+        Operand isolation -> problemy z P&R oraz większe opóźnienia!!
+    zmniejszenia mocy pobieranej przez cały blok/podukład:
+
