@@ -48,7 +48,7 @@
 
 4. Opisać "entity" w języku VHDL:
 --aspekt jednostki projektowej; jest deklaracją jednostki;
---podobne w działaniu są pythonowe klasy i funkcje
+--podobne w działaniu są pythonowe klasy i funkcje w takim sensie, że jak raz się w kodzie zadeklaruje "entity", to można ją przytoczyć później
 
 
 5. Komunikacja w porcie szeregowym na zasadzie RS232 UADR "Układy FPGA w przykładach":
