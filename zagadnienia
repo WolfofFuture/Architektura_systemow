@@ -1,5 +1,6 @@
 1. Budowa i sposób działania modułu DCM na podstawie IP Core modułu AMD XILINX Wizard "Układy FPGA w przykładach":
--- pozwalają one na kompensowanie różnic faz (wynikających z opóźnień propagacji [czas jaki potrzebuje impuls na przejście od jednego do drugiego końca każdej pary]) sygnałów zegarowych w fizycznie różnych miejscach krzemowej struktury układu
+-- pozwalają one na kompensowanie różnic faz (wynikających z opóźnień propagacji [czas jaki potrzebuje impuls na przejście od jednego do drugiego końca każdej pary]) sygnałów 
+zegarowych w fizycznie różnych miejscach krzemowej struktury układu
 
 -- można je wykorzystać do syntezowania (mnożenia i podziału częstotliwości sygnału zewnętrznego) wewnętrznych sygnałów zegarowych
 
