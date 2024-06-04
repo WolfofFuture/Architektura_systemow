@@ -1,0 +1,54 @@
+1. Budowa i sposób działania modułu DCM na podstawie IP Core modułu AMD XILINX Wizard "Układy FPGA w przykładach":
+-- pozwalają one na kompensowanie różnic faz (wynikających z opóźnień propagacji [czas jaki potrzebuje impuls na przejście od jednego do drugiego końca każdej pary]) sygnałów zegarowych w fizycznie różnych miejscach krzemowej struktury układu
+
+-- można je wykorzystać do syntezowania (mnożenia i podziału częstotliwości sygnału zewnętrznego) wewnętrznych sygnałów zegarowych
+
+-- składa się z 4 bloków: syntezera częstotliwości DFS (Digital Frequency Synthesiser), pętli DLL (Delay Locked Loop), programowanego przesuwnika fazy (Phase Shifter) oraz zespołu logiki Status Logic
+
+-- najważniejsze funkcje (które mogą być łączone i wykonywane jednocześnie) tych układów to:
+    ++dzielenie i mnożenie częstotliwości zegara
+    ++generacja przebiegów zegarowych z wypełnieniem 50%
+    ++przesuwanie fazy sygnału o zadany kąt (w ograniczonym zakresie)
+    ++eliminacja zniekształceń fazowych podczas dystrybucji sygnałów zegarowych po strukturze FPGA
+    ++powielanie, wzmacnianie i buforowanie sygnałów zegarowych
+
+
+
+2. Czy jest różnica między licznikiem binarnym a dzielnikiem częstotliwości, jeśli chodzi o sposób działania? -- Nie ma:
+--Jest tak, ponieważ dzielnik częstotliwości wykorzystuje moduł składający się z licznika binarnego oraz oba opierają się na zliczaniu impulsów zegarowych
+34. process (clk)     ----------------proces czeka na zmianę sygnału clk
+35. begin
+36.    if (clk'event and clk='1') then     --czekanie na narastające zbocze clk
+37.      if cnt< Div then     
+38.        cnt <= cnt + 1;       ---zliczanie impulsów zegara
+39.      else
+40.        cnt <= (others=>'0');  ----zerowanie licznika
+41.        clk_out <= not clk_out;  ------zmiana stanu clk_out
+42.      end if;
+43.    end if;
+44. end process;
+
+
+
+3. Omówienie budowy i zasady działania tranzystorów układów cyfrowych i tranzystorów analogowych (np. wzmacniacze):
+--tranzystory układów cyfrowych:
+++mała wrażliwość na parametry, charakterystyki elementów i rozrzuty produkcyjne
+++mało istotne zależności temperaturowe
+++wysoki stopień automatyzacji projektowania
+++czasochłonne, lecz koncepcyjnie proste testowanie, wymagające odróżniania poziomu napięcia dla ***0*** i ***1***
+++znane jako tranzystory MOS
+
+--tranzystory układów analogowych:
+++muszą mieć najbliższą możliwą budowę
+++znane jako tranzystory bipolarne i unipolarne (dwa różne rodzaje)
+++wchodzą w skład wzmacniaczy wielostopniowych (np. operacyjnych)
+
+
+4. Opisać "entity" w języku VHDL:
+--aspekt jednostki projektowej; jest deklaracją jednostki;
+--podobne w działaniu są pythonowe klasy i funkcje
+
+
+5. Komunikacja w porcie szeregowym na zasadzie RS232 UADR "Układy FPGA w przykładach":
+--w stanie spoczynku linia pozostaje w stanie "1", zaś wysyłanie znaku rozpoczyna bit ***start*** o wartości "0"; następnie przesyłane są kolejne bity znaku, poczynając od bitu najmłodszego, jakim jest lsb;
+-- całą sekwencję kończy bit ***stop*** o wartości "1"
