@@ -16,6 +16,8 @@
 
 2. Czy jest różnica między licznikiem binarnym a dzielnikiem częstotliwości, jeśli chodzi o sposób działania? -- Nie ma:
 --Jest tak, ponieważ dzielnik częstotliwości wykorzystuje moduł składający się z licznika binarnego oraz oba opierają się na zliczaniu impulsów zegarowych
+--ten moduł licznika binarnego znajduje się w linijkach od 34 do 44 kodu dzielnika częstotliwości
+
 34. process (clk)     ----------------proces czeka na zmianę sygnału clk
 35. begin
 36.    if (clk'event and clk='1') then     --czekanie na narastające zbocze clk
